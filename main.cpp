@@ -3,21 +3,20 @@
 #include <OpenGL/OpenGL.h>
 #include "PhysicsBox.hpp"
 #include <cmath>
-#define pi 3.1415
 
-float rotation=0.0;
-phbox::vec2 mPos;
-phbox::figure f0;
-phbox::figure f1;
+using namespace phbox;
 
-void drawPoint(phbox::vec2 p)
+vec2 mPos;
+figure f0,f1;
+
+void drawPoint(vec2 v)
 {
 	glBegin(GL_POINTS);
-	glVertex2f(p.x, p.y);
+	glVertex2f(v.x,v.y);
 	glEnd();
 }
 
-void drawLine(phbox::line_segment l)
+void drawLine(line_segment l)
 {
 	glBegin(GL_LINES);
 	glVertex2f(l.getFirstPoint().x, l.getFirstPoint().y);
@@ -25,41 +24,25 @@ void drawLine(phbox::line_segment l)
 	glEnd();
 }
 
-void drawFigure(phbox::figure f)
+void drawFigure(figure f)
 {
-	phbox::line_segment lines[f.getVertexCount()];
-	for(int i=0;i<f.getVertexCount()-1;i++)
-		lines[i]=phbox::line_segment(f.getVertexPosition(i),f.getVertexPosition(i+1));
-	lines[f.getVertexCount()-1]=phbox::line_segment(f.getVertexPosition(f.getVertexCount()-1),f.getVertexPosition(0));
+	line_segment *lines=f.getLines();
 
-	for(int i=0; i<f.getVertexCount(); i++)
+	for(int i=0;i<f.getVertexCount();i++)
 		drawLine(lines[i]);
 }
-
-phbox::vec2 color;
 
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glColor3f(1.0,0.0,0.0);
-	drawPoint(f0.getPosition());
 	glColor3f(1.0, 1.0, 1.0);
-	rotation+=0.01;
-	f0.setRotation(rotation);
+	f0.setRotation(f0.getRotation()+0.01);
 	drawFigure(f0);
 
+	if(f1.intersects(f0)) glColor3f(1.0, 0.0, 0.0);
 	f1.setPosition(mPos);
-	f1.setRotation(-rotation/2.0);
-	if(f1.intersects(f0)) glColor3f(1.0,0.0,0.0);
 	drawFigure(f1);
-
-	/*glColor3f(color.x,color.y,0.0);
-	drawPoint(mPos);
-	drawPoint(phbox::vec2(mPos.x-1,mPos.y));
-	drawPoint(phbox::vec2(mPos.x+1,mPos.y));
-	drawPoint(phbox::vec2(mPos.x,mPos.y-1));
-	drawPoint(phbox::vec2(mPos.x,mPos.y+1));*/
 
 	glutSwapBuffers();
 }
@@ -71,21 +54,21 @@ void mouse(int x, int y)
 
 int main(int argc, char **argv)
 {
-	color=phbox::vec2(1.0,0.0);
-	f0.setVertexCount(4);
-	f0.setVertex(0, phbox::vec2(0.0,0.0));
-	f0.setVertex(1, phbox::vec2(100.0,0.0));
-	f0.setVertex(2, phbox::vec2(100.0,50.0));
-	f0.setVertex(3, phbox::vec2(0.0,50.0));
-	f0.setPosition(phbox::vec2(300.0,300.0));
+	f0.setVertexCount(5);
+	f0.setVertex(0, vec2(0.0, 0.0));
+	f0.setVertex(1, vec2(0.0, 40.0));
+	f0.setVertex(2, vec2(20.0, 60.0));
+	f0.setVertex(3, vec2(40.0, 40.0));
+	f0.setVertex(4, vec2(40.0, 0.0));
 	f0.setOriginToCenter();
+	f0.setPosition(vec2(300.0, 300.0));
 
 	f1.setVertexCount(3);
-	f1.setVertex(0, phbox::vec2(-50.0, 0.0));
-	f1.setVertex(1, phbox::vec2(0.0, 50.0));
-	f1.setVertex(2, phbox::vec2(50.0, 0.0));
-	f1.setPosition(phbox::vec2(600.0, 300.0));
+	f1.setVertex(0, vec2(0.0, 0.0));
+	f1.setVertex(1, vec2(40.0, 20.0));
+	f1.setVertex(2, vec2(60.0, 0.0));
 	f1.setOriginToCenter();
+	f1.setPosition(vec2(500.0, 300.0));
 
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);

@@ -45,7 +45,7 @@ namespace phbox
 
 		float getDistanceFromPoint(vec2);
 
-		bool checkIntersectionWithLine(line_segment);
+		bool intersects(line_segment);
 
 		bool isPointOn(vec2);
 

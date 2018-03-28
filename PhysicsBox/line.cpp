@@ -59,7 +59,7 @@ namespace phbox
 
 	float line_segment::getDistanceFromPoint(vec2 point) { return getNormalFromPoint(point).module(); }
 
-	bool line_segment::checkIntersectionWithLine(line_segment l)
+	bool line_segment::intersects(line_segment l)
 	{
 		float D=det2f(A,B,l.getA(),l.getB());
 		float Dx=det2f(-C,B,-l.getC(),l.getB());
@@ -67,21 +67,32 @@ namespace phbox
 
 		if(D!=0)
 		{
-			float x0=l.getFirstPoint().x;
-			float x1=l.getSecondPoint().x;
-			float y0=l.getFirstPoint().y;
-			float y1=l.getSecondPoint().y;
+			float l0x1=p0.x;
+			float l0x2=p1.x;
+			float l0y1=p0.y;
+			float l0y2=p1.y;
 
-			float left_border=(x0<x1)?x0:x1;
-			float right_border=(x0<x1)?x1:x0;
-			float up_border=(y0<y1)?y0:y1;
-			float down_border=(y0<y1)?y1:y0;
+			float l0left_border=(l0x1<l0x2)?l0x1:l0x2;
+			float l0right_border=(l0x1>l0x2)?l0x1:l0x2;
+			float l0up_border=(l0y1<l0y2)?l0y1:l0y2;
+			float l0down_border=(l0y1>l0y2)?l0y1:l0y2;
 
-			return ((Dx/D>=left_border) && (Dx/D<=right_border) && (Dy/D>=up_border) && (Dy/D<=down_border));
+
+			float l1x1=l.getFirstPoint().x;
+			float l1x2=l.getSecondPoint().x;
+			float l1y1=l.getFirstPoint().y;
+			float l1y2=l.getSecondPoint().y;
+
+			float l1left_border=(l1x1<l1x2)?l1x1:l1x2;
+			float l1right_border=(l1x1>l1x2)?l1x1:l1x2;
+			float l1up_border=(l1y1<l1y2)?l1y1:l1y2;
+			float l1down_border=(l1y1>l1y2)?l1y1:l1y2;
+
+			vec2 point=vec2(Dx/D,Dy/D);
+			return (point.x>=l0left_border) and (point.x<=l0right_border) and (point.y>=l0up_border) and (point.y<=l0down_border) and
+			       (point.x>=l1left_border) and (point.x<=l1right_border) and (point.y>=l1up_border) and (point.y<=l1down_border);
 		}
-		else
-		if(D==Dx==Dy==0) return true;
-		else return false;
+		else return (D==0) and (Dx==0) and (Dy==0);
 	}
 
 	bool line_segment::isPointOn(vec2 point)

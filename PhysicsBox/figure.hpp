@@ -21,6 +21,8 @@ namespace phbox
 	public:
 		figure();
 
+		line_segment *getLines();
+
 		void setVertexCount(int);
 
 		int getVertexCount();

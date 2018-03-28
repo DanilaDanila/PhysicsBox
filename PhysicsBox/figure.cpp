@@ -5,6 +5,16 @@ namespace phbox
 {
 	figure::figure() { vertexes=NULL; rotation=0; position=origin=vec2(0.0,0.0); }
 
+	line_segment *figure::getLines()
+	{
+		line_segment *lines=new line_segment[vertexes_count];
+
+		for(int i=0;i<vertexes_count-1;i++)
+			lines[i]=line_segment(this->getVertexPosition(i),this->getVertexPosition(i+1));
+		lines[vertexes_count-1]=line_segment(this->getVertexPosition(vertexes_count-1),this->getVertexPosition(0));
+		return lines;
+	}
+
 	void figure::setVertexCount(int count)
 	{
 		vertexes_count=count;
@@ -94,6 +104,13 @@ namespace phbox
 	bool figure::intersects(figure f)
 	{
 		// Some code
+
+		line_segment *lines0=this->getLines();
+		line_segment *lines1=f.getLines();
+
+		for(int i=0;i<vertexes_count;i++)
+			for(int j=0;j<f.getVertexCount();j++)
+				if(lines0[i].intersects(lines1[j])) return true;
 
 		return false;
 	}

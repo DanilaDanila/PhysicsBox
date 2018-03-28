@@ -78,7 +78,7 @@ namespace phbox
 
 		float getDistanceFromPoint(vec2);
 
-		bool checkIntersectionWithLine(line_segment);
+		bool intersects(line_segment);
 
 		bool isPointOn(vec2);
 
@@ -101,6 +101,8 @@ namespace phbox
 
 	public:
 		figure();
+
+		line_segment *getLines();
 
 		void setVertexCount(int);
 
